@@ -35,6 +35,9 @@ add_task() {
     read -rp "Enter due date (YYYY-MM-DD) or press Enter to skip: " date
     if [ -z "$date" ]; then
         date="N/A"
+    elif [[ ! "$date" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+        echo "[ERROR] Invalid date format. Please use YYYY-MM-DD."
+        return
     fi
 
     local id
@@ -90,7 +93,12 @@ edit_task() {
     [ -z "$new_title" ] && new_title="$old_title"
 
     read -rp "New date [$old_date]: " new_date
-    [ -z "$new_date" ] && new_date="$old_date"
+    if [ -z "$new_date" ]; then
+        new_date="$old_date"
+    elif [[ ! "$new_date" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+        echo "[ERROR] Invalid date format. Please use YYYY-MM-DD."
+        return
+    fi
 
     # Rewrite file
     tmp=$(mktemp)
